@@ -1,0 +1,40 @@
+<!--
+  File:     /var/ossec/etc/rules/local_rules.xml
+  Machine:  wazuh-server (the Wazuh manager)
+  Purpose:  Custom rules for this lab. Custom rule IDs must be between 100000 and 120000.
+
+  How these rules work:
+    Built-in rule 550 = "Integrity checksum changed." (level 7)
+    Built-in rule 553 = "File deleted."               (level 7)
+    The rules below are "children" of 550 and 553. When the changed or deleted
+    file is inside /opt/fim-lab/, the child rule fires INSTEAD of the parent,
+    with a higher level. This shows how rule levels decide how serious an alert is.
+
+  CHANGE THIS: nothing, unless you monitor a different folder in agent.conf.
+
+  Note: this file replaces the default local_rules.xml, which only contains an
+  example rule (100001) for a fake IP address 1.1.1.1.
+-->
+<group name="local,syscheck,fim_lab,">
+
+  <!-- A file inside /opt/fim-lab was modified: raise level 7 -> 10 -->
+  <rule id="100200" level="10">
+    <if_sid>550</if_sid>
+    <field name="file">^/opt/fim-lab/</field>
+    <description>FIM lab: monitored file modified: $(file)</description>
+    <mitre>
+      <id>T1565.001</id>
+    </mitre>
+  </rule>
+
+  <!-- A file inside /opt/fim-lab was deleted: raise level 7 -> 12 -->
+  <rule id="100201" level="12">
+    <if_sid>553</if_sid>
+    <field name="file">^/opt/fim-lab/</field>
+    <description>FIM lab: monitored file deleted: $(file)</description>
+    <mitre>
+      <id>T1070.004</id>
+    </mitre>
+  </rule>
+
+</group>
