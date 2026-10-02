@@ -1365,6 +1365,3 @@ Other:
 - [MITRE ATT&CK T1110 Brute Force](https://attack.mitre.org/techniques/T1110/)
 - [Ubuntu ufw manual (22.04)](https://manpages.ubuntu.com/manpages/jammy/man8/ufw.8.html)
 
----
-
-*Written by Md Rakibul Hasan as part of a hands-on SOC learning journey. Licensed under the [MIT License](LICENSE).*
