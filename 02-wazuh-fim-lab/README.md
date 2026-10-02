@@ -1456,6 +1456,3 @@ Other:
 - [Ubuntu ufw manual (22.04)](https://manpages.ubuntu.com/manpages/jammy/man8/ufw.8.html)
 - [icacls (Microsoft Learn)](https://learn.microsoft.com/windows-server/administration/windows-commands/icacls)
 
----
-
-*Written by Md Rakibul Hasan as part of a hands-on SOC learning journey.*
