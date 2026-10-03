@@ -1,8 +1,0 @@
-vm,direction,protocol,port,source,purpose
-wazuh-server,inbound,tcp,22,<YOUR_PUBLIC_IP>/32,SSH from your computer
-wazuh-server,inbound,tcp,443,<YOUR_PUBLIC_IP>/32,Wazuh dashboard (web UI) from your computer
-wazuh-server,inbound,tcp,1514,<ENDPOINT_PRIVATE_IP>/32,Agent events (ubuntu-endpoint to manager)
-wazuh-server,inbound,tcp,1515,<ENDPOINT_PRIVATE_IP>/32,Agent enrollment (ubuntu-endpoint to manager)
-ubuntu-endpoint,inbound,tcp,22,<YOUR_PUBLIC_IP>/32,SSH from your computer
-ubuntu-endpoint,inbound,tcp,22,<WAZUH_SERVER_PRIVATE_IP>/32,SSH brute-force simulation (lab test only)
-both,outbound,all,all,0.0.0.0/0,Default allow (package downloads and agent to manager traffic)
