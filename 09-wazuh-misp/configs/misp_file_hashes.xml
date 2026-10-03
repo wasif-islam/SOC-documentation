@@ -1,0 +1,40 @@
+<!--
+  File:    /var/ossec/etc/rules/misp_file_hashes.xml
+  Machine: wazuh-server
+  Purpose: rules for the official MISP/wazuh-integration file hash lookups.
+           Same rules as the official file; the official file uses ID 100803
+           twice, so the last two rules are 100804 and 100805 here.
+-->
+<group name="misp,malware,">
+    <rule id="100800" level="0">
+        <decoded_as>json</decoded_as>
+        <description>MISP: file hash check</description>
+        <field name="integration">misp_file_hashes</field>
+        <options>no_full_log</options>
+    </rule>
+    <rule id="100801" level="0">
+        <if_sid>100800</if_sid>
+        <field name="misp_file_hashes.found">0</field>
+        <description>MISP: file hash not found</description>
+    </rule>
+    <rule id="100802" level="12">
+        <if_sid>100800</if_sid>
+        <field name="misp_file_hashes.found">1</field>
+        <description>MISP: file hash matched</description>
+    </rule>
+    <rule id="100803" level="10">
+        <if_sid>100800</if_sid>
+        <field name="misp_file_hashes.error">403</field>
+        <description>MISP ERROR: Invalid MISP credentials, check that the api_key in the MISP integration is a valid MISP AuthKey</description>
+    </rule>
+    <rule id="100804" level="10">
+        <if_sid>100800</if_sid>
+        <field name="misp_file_hashes.error">429</field>
+        <description>MISP ERROR: Rate limit exceeded, too many requests</description>
+    </rule>
+    <rule id="100805" level="10">
+        <if_sid>100800</if_sid>
+        <field name="misp_file_hashes.error">500</field>
+        <description>MISP ERROR: $(misp_file_hashes.description)</description>
+    </rule>
+</group>

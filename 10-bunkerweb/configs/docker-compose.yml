@@ -1,0 +1,13 @@
+# File:    ~/testsite/docker-compose.yml
+# Machine: bunkerweb-server
+# Purpose: a small test web site (the "web application") that BunkerWeb protects.
+#          It listens only on 127.0.0.1:8081, so the only way in is through BunkerWeb.
+services:
+  testsite:
+    image: nginx:alpine          # a small web server
+    container_name: testsite
+    ports:
+      - "127.0.0.1:8081:80"      # only reachable from this VM itself
+    volumes:
+      - ./html:/usr/share/nginx/html:ro   # serve your page, read-only
+    restart: unless-stopped
