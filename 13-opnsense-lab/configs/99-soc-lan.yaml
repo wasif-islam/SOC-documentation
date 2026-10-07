@@ -1,0 +1,15 @@
+# /etc/netplan/99-soc-lan.yaml  (lab 13: OPNsense is the gateway)
+# Copy to each Ubuntu lab VM. Change the two lines marked "CHANGE THIS".
+network:
+  version: 2
+  ethernets:
+    enp0s3:                        # CHANGE THIS: <VM_INTERFACE> (ip -br link)
+      dhcp4: false
+      addresses:
+        - 10.0.1.20/24             # CHANGE THIS: this VM's <VM_IP> (VM table in the README)
+      routes:
+        - to: default
+          via: 10.0.1.1            # OPNsense LAN address = the gateway
+      nameservers:
+        addresses:
+          - 10.0.1.1               # OPNsense answers DNS (Unbound)
