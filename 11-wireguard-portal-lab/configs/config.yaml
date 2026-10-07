@@ -1,0 +1,26 @@
+# WireGuard Portal settings
+# Goes to: /opt/wg-portal/config/config.yaml on wazuh-server
+# Step B3 writes this file for you and fills in the secrets.
+# This copy is a reference only. Never upload a copy with real values.
+
+core:
+  admin_user: admin@wgportal.local
+  admin_password: "<WG_PORTAL_ADMIN_PASSWORD>"   # CHANGE THIS (Step B3 generates it)
+  import_existing: true
+  restore_state: true
+
+advanced:
+  start_listen_port: 51820
+  start_cidr_v4: 10.11.12.0/24
+  use_ip_v6: false
+  config_storage_path: /etc/wireguard
+
+statistics:
+  listening_address: "127.0.0.1:8787"
+
+web:
+  listening_address: ":8888"
+  external_url: http://<WAZUH_SERVER_IP>:8888   # CHANGE THIS
+  session_secret: "<SESSION_SECRET>"            # CHANGE THIS (Step B3 generates it)
+  csrf_secret: "<CSRF_SECRET>"                  # CHANGE THIS (Step B3 generates it)
+  request_logging: true

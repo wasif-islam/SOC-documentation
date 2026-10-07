@@ -1,0 +1,18 @@
+# WireGuard Portal container
+# Goes to: /opt/wg-portal/docker-compose.yml on wazuh-server
+services:
+  wg-portal:
+    image: wgportal/wg-portal:v2
+    container_name: wg-portal
+    restart: unless-stopped
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+    cap_add:
+      - NET_ADMIN
+    network_mode: "host"
+    volumes:
+      - /etc/wireguard:/etc/wireguard
+      - ./data:/app/data
+      - ./config:/app/config
