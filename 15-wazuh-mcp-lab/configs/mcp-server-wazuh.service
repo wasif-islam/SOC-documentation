@@ -1,0 +1,16 @@
+# Copy to wazuh-server: /etc/systemd/system/mcp-server-wazuh.service
+[Unit]
+Description=Wazuh MCP server (Streamable HTTP on /mcp)
+Wants=network-online.target
+After=network-online.target wazuh-manager.service wazuh-indexer.service
+
+[Service]
+EnvironmentFile=/etc/mcp-server-wazuh/wazuh-mcp.env
+# CHANGE THIS: replace 10.0.1.10 with <WAZUH_SERVER_IP>, the private IP of wazuh-server
+ExecStart=/usr/local/bin/mcp-server-wazuh --transport http --host 10.0.1.10 --port 8080
+DynamicUser=yes
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

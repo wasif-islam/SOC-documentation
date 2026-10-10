@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "wazuh": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "http://10.0.1.10:8080/mcp",
+        "--allow-http"
+      ]
+    }
+  }
+}
