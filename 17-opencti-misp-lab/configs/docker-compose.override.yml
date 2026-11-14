@@ -1,0 +1,35 @@
+# Lab 17: MISP connector for OpenCTI.
+# Save as /root/opencti/docker/docker-compose.override.yml on opencti-server.
+# Docker Compose reads this file together with docker-compose.yml.
+# The values in ${...} come from /root/opencti/docker/.env (step B1). Nothing to edit here.
+services:
+  connector-misp:
+    image: opencti/connector-misp:latest
+    environment:
+      - OPENCTI_URL=http://opencti:8080
+      - OPENCTI_TOKEN=${OPENCTI_ADMIN_TOKEN}
+      - CONNECTOR_ID=${CONNECTOR_MISP_ID}
+      - CONNECTOR_TYPE=EXTERNAL_IMPORT
+      - CONNECTOR_NAME=MISP
+      - CONNECTOR_SCOPE=misp
+      - CONNECTOR_LOG_LEVEL=info
+      - CONNECTOR_DURATION_PERIOD=PT15M
+      - MISP_URL=${MISP_URL}
+      - MISP_KEY=${MISP_OPENCTI_KEY}
+      - MISP_SSL_VERIFY=false
+      - MISP_DATETIME_ATTRIBUTE=timestamp
+      - MISP_CREATE_REPORTS=true
+      - MISP_REPORT_TYPE=misp-event
+      - MISP_CREATE_INDICATORS=true
+      - MISP_CREATE_OBSERVABLES=true
+      - MISP_CREATE_TAGS_AS_LABELS=true
+      # Singular "THREAT" on purpose: the documented MISP_GUESS_THREATS_FROM_TAGS is ignored by the current connector.
+      - MISP_GUESS_THREAT_FROM_TAGS=true
+      - MISP_IMPORT_FROM_DATE=2020-01-01
+      - MISP_IMPORT_TAGS_NOT=osint:source-type="block-or-filter-list"
+      - MISP_IMPORT_ONLY_PUBLISHED=false
+      - MISP_IMPORT_WITH_ATTACHMENTS=false
+    restart: always
+    depends_on:
+      opencti:
+        condition: service_healthy
