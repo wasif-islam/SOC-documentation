@@ -1,0 +1,57 @@
+{
+  "size": 0,
+  "track_total_hits": true,
+  "query": { "range": { "timestamp": { "gte": "now-2M/M", "lt": "now/M", "time_zone": "+06:00" } } },
+  "aggs": {
+    "prev_month": {
+      "filter": { "range": { "timestamp": { "gte": "now-2M/M", "lt": "now-1M/M", "time_zone": "+06:00" } } },
+      "aggs": {
+        "severity": { "range": { "field": "rule.level", "ranges": [
+          { "key": "low", "to": 7 },
+          { "key": "medium", "from": 7, "to": 10 },
+          { "key": "high", "from": 10, "to": 12 },
+          { "key": "critical", "from": 12 } ] } }
+      }
+    },
+    "this_month": {
+      "filter": { "range": { "timestamp": { "gte": "now-1M/M", "lt": "now/M", "time_zone": "+06:00" } } },
+      "aggs": {
+        "severity": { "range": { "field": "rule.level", "ranges": [
+          { "key": "low", "to": 7 },
+          { "key": "medium", "from": 7, "to": 10 },
+          { "key": "high", "from": 10, "to": 12 },
+          { "key": "critical", "from": 12 } ] } },
+        "per_day": {
+          "date_histogram": { "field": "timestamp", "calendar_interval": "day", "time_zone": "+06:00", "min_doc_count": 0 },
+          "aggs": { "high_plus": { "filter": { "range": { "rule.level": { "gte": 10 } } } } }
+        },
+        "top_rules": {
+          "terms": { "field": "rule.id", "size": 10 },
+          "aggs": {
+            "desc": { "terms": { "field": "rule.description", "size": 1 } },
+            "level": { "max": { "field": "rule.level" } }
+          }
+        },
+        "top_agents": {
+          "terms": { "field": "agent.name", "size": 10 },
+          "aggs": { "high_plus": { "filter": { "range": { "rule.level": { "gte": 10 } } } } }
+        },
+        "top_srcips": { "terms": { "field": "data.srcip", "size": 10 } },
+        "mitre_tactics": { "terms": { "field": "rule.mitre.tactic", "size": 8 } },
+        "auth_fail": { "filter": { "terms": { "rule.groups": ["authentication_failed", "authentication_failures"] } } },
+        "fim": { "filter": { "term": { "rule.groups": "syscheck" } } },
+        "suricata": {
+          "filter": { "term": { "rule.groups": "suricata" } },
+          "aggs": { "top_sigs": { "terms": { "field": "data.alert.signature", "size": 5 } } }
+        },
+        "vuln": {
+          "filter": { "term": { "rule.groups": "vulnerability-detector" } },
+          "aggs": {
+            "sev": { "terms": { "field": "data.vulnerability.severity", "size": 5 } },
+            "top_pkgs": { "terms": { "field": "data.vulnerability.package.name", "size": 5 } }
+          }
+        }
+      }
+    }
+  }
+}

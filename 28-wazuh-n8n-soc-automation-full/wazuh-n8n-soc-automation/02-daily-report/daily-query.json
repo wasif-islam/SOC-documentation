@@ -1,0 +1,17 @@
+{
+  "size": 0,
+  "track_total_hits": true,
+  "query": { "range": { "timestamp": { "gte": "now-24h" } } },
+  "aggs": {
+    "severity": { "range": { "field": "rule.level", "ranges": [
+      { "key": "low", "to": 7 },
+      { "key": "medium", "from": 7, "to": 10 },
+      { "key": "high", "from": 10, "to": 12 },
+      { "key": "critical", "from": 12 } ] } },
+    "top_rules": { "terms": { "field": "rule.id", "size": 5 },
+      "aggs": { "desc": { "terms": { "field": "rule.description", "size": 1 } },
+                "level": { "max": { "field": "rule.level" } } } },
+    "top_agents": { "terms": { "field": "agent.name", "size": 5 } },
+    "top_srcips": { "terms": { "field": "data.srcip", "size": 5 } }
+  }
+}

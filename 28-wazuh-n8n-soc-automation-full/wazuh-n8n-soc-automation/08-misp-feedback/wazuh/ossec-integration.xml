@@ -1,0 +1,9 @@
+<!-- Add inside <ossec_config> in /var/ossec/etc/ossec.conf, then: systemctl restart wazuh-manager -->
+<!-- Sends only the "malicious IP" verdict alerts (rule 100951, created by workflow 06)
+     to the n8n "MISP feedback" workflow -->
+<integration>
+  <name>custom-n8n</name>
+  <hook_url>http://localhost:5678/webhook/wazuh-misp</hook_url>
+  <rule_id>100951</rule_id>
+  <alert_format>json</alert_format>
+</integration>

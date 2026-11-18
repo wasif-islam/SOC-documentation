@@ -1,0 +1,145 @@
+<!-- Wazuh alert email template v3 for the n8n "Send Email" node (Email Format: HTML, Expression mode) -->
+<div style="margin:0;padding:28px 0;background-color:#f1f5f9;font-family:'Segoe UI',Arial,Helvetica,sans-serif;color:#1d2433;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f5f9;">
+<tr><td align="center">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background-color:#ffffff;border-radius:14px;overflow:hidden;border:1px solid #e2e8f0;">
+
+  <!-- Header: soft severity tint -->
+  <tr>
+    <td align="center" bgcolor="{{ $json.body.rule.level >= 12 ? '#fdecec' : '#fff1e6' }}" style="padding:32px 28px 26px;background-color:{{ $json.body.rule.level >= 12 ? '#fdecec' : '#fff1e6' }};border-bottom:3px solid {{ $json.body.rule.level >= 12 ? '#dc2626' : '#ea580c' }};">
+      <div style="font-size:13px;font-weight:600;color:#64748b;">🛡️ Wazuh SIEM</div>
+      <div style="font-size:26px;font-weight:800;color:#1d2433;margin-top:8px;line-height:1.25;">Security alert detected</div>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:14px;"><tr>
+        <td bgcolor="{{ $json.body.rule.level >= 12 ? '#dc2626' : '#ea580c' }}" style="background-color:{{ $json.body.rule.level >= 12 ? '#dc2626' : '#ea580c' }};border-radius:20px;padding:6px 18px;font-size:14px;font-weight:700;color:#ffffff;letter-spacing:0.5px;">{{ $json.body.rule.level >= 12 ? 'CRITICAL' : 'HIGH' }}</td>
+      </tr></table>
+    </td>
+  </tr>
+
+  <tr><td style="padding:26px 26px 6px;">
+
+    <!-- What happened -->
+    <div style="font-size:13px;font-weight:700;color:#0f766e;margin-bottom:6px;">What happened?</div>
+    <div style="font-size:19px;font-weight:700;line-height:1.4;color:#1d2433;margin-bottom:24px;">{{ $json.body.rule.description }}</div>
+
+    <!-- Where / When -->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px;">
+      <tr>
+        <td width="50%" valign="top" style="padding-right:6px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;">
+            <div style="font-size:12px;font-weight:700;color:#0f766e;">🖥️ Where? (affected system)</div>
+            <div style="font-size:16px;font-weight:700;color:#1d2433;margin-top:6px;">{{ ($json.body.agent || {}).name || 'Unknown' }}</div>
+            <div style="font-size:13px;color:#64748b;margin-top:2px;">{{ ($json.body.agent || {}).ip || 'No IP' }}</div>
+          </td></tr></table>
+        </td>
+        <td width="50%" valign="top" style="padding-left:6px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;">
+            <div style="font-size:12px;font-weight:700;color:#0f766e;">🕒 When?</div>
+            <div style="font-size:16px;font-weight:700;color:#1d2433;margin-top:6px;">{{ DateTime.fromISO($json.body.timestamp).isValid ? DateTime.fromISO($json.body.timestamp).toFormat('hh:mm a') : $json.body.timestamp }}</div>
+            <div style="font-size:13px;color:#64748b;margin-top:2px;">{{ DateTime.fromISO($json.body.timestamp).isValid ? DateTime.fromISO($json.body.timestamp).toFormat('MMMM dd, yyyy') : '' }}</div>
+          </td></tr></table>
+        </td>
+      </tr>
+    </table>
+
+    <!-- How serious / Rule ID -->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px;">
+      <tr>
+        <td width="50%" valign="top" style="padding-right:6px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;">
+            <div style="font-size:12px;font-weight:700;color:#0f766e;">⚠️ How serious? (severity level)</div>
+            <div style="font-size:16px;font-weight:700;color:{{ $json.body.rule.level >= 12 ? '#dc2626' : '#ea580c' }};margin-top:6px;">Level {{ $json.body.rule.level }} - {{ $json.body.rule.level >= 12 ? 'CRITICAL' : 'HIGH' }}</div>
+            <!-- 15-step level meter -->
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="2" border="0" style="margin-top:8px;"><tr>
+              <td height="6" style="height:6px;font-size:0;line-height:0;border-radius:2px;background-color:{{ $json.body.rule.level >= 1 ? ($json.body.rule.level >= 12 ? '#dc2626' : '#ea580c') : '#e2e8f0' }};">&nbsp;</td>
+              <td height="6" style="height:6px;font-size:0;line-height:0;border-radius:2px;background-color:{{ $json.body.rule.level >= 2 ? ($json.body.rule.level >= 12 ? '#dc2626' : '#ea580c') : '#e2e8f0' }};">&nbsp;</td>
+              <td height="6" style="height:6px;font-size:0;line-height:0;border-radius:2px;background-color:{{ $json.body.rule.level >= 3 ? ($json.body.rule.level >= 12 ? '#dc2626' : '#ea580c') : '#e2e8f0' }};">&nbsp;</td>
+              <td height="6" style="height:6px;font-size:0;line-height:0;border-radius:2px;background-color:{{ $json.body.rule.level >= 4 ? ($json.body.rule.level >= 12 ? '#dc2626' : '#ea580c') : '#e2e8f0' }};">&nbsp;</td>
+              <td height="6" style="height:6px;font-size:0;line-height:0;border-radius:2px;background-color:{{ $json.body.rule.level >= 5 ? ($json.body.rule.level >= 12 ? '#dc2626' : '#ea580c') : '#e2e8f0' }};">&nbsp;</td>
+              <td height="6" style="height:6px;font-size:0;line-height:0;border-radius:2px;background-color:{{ $json.body.rule.level >= 6 ? ($json.body.rule.level >= 12 ? '#dc2626' : '#ea580c') : '#e2e8f0' }};">&nbsp;</td>
+              <td height="6" style="height:6px;font-size:0;line-height:0;border-radius:2px;background-color:{{ $json.body.rule.level >= 7 ? ($json.body.rule.level >= 12 ? '#dc2626' : '#ea580c') : '#e2e8f0' }};">&nbsp;</td>
+              <td height="6" style="height:6px;font-size:0;line-height:0;border-radius:2px;background-color:{{ $json.body.rule.level >= 8 ? ($json.body.rule.level >= 12 ? '#dc2626' : '#ea580c') : '#e2e8f0' }};">&nbsp;</td>
+              <td height="6" style="height:6px;font-size:0;line-height:0;border-radius:2px;background-color:{{ $json.body.rule.level >= 9 ? ($json.body.rule.level >= 12 ? '#dc2626' : '#ea580c') : '#e2e8f0' }};">&nbsp;</td>
+              <td height="6" style="height:6px;font-size:0;line-height:0;border-radius:2px;background-color:{{ $json.body.rule.level >= 10 ? ($json.body.rule.level >= 12 ? '#dc2626' : '#ea580c') : '#e2e8f0' }};">&nbsp;</td>
+              <td height="6" style="height:6px;font-size:0;line-height:0;border-radius:2px;background-color:{{ $json.body.rule.level >= 11 ? ($json.body.rule.level >= 12 ? '#dc2626' : '#ea580c') : '#e2e8f0' }};">&nbsp;</td>
+              <td height="6" style="height:6px;font-size:0;line-height:0;border-radius:2px;background-color:{{ $json.body.rule.level >= 12 ? '#dc2626' : '#e2e8f0' }};">&nbsp;</td>
+              <td height="6" style="height:6px;font-size:0;line-height:0;border-radius:2px;background-color:{{ $json.body.rule.level >= 13 ? '#dc2626' : '#e2e8f0' }};">&nbsp;</td>
+              <td height="6" style="height:6px;font-size:0;line-height:0;border-radius:2px;background-color:{{ $json.body.rule.level >= 14 ? '#dc2626' : '#e2e8f0' }};">&nbsp;</td>
+              <td height="6" style="height:6px;font-size:0;line-height:0;border-radius:2px;background-color:{{ $json.body.rule.level >= 15 ? '#dc2626' : '#e2e8f0' }};">&nbsp;</td>
+            </tr></table>
+            <div style="font-size:11px;color:#94a3b8;margin-top:4px;">{{ $json.body.rule.level }} out of 15</div>
+          </td></tr></table>
+        </td>
+        <td width="50%" valign="top" style="padding-left:6px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;">
+            <div style="font-size:12px;font-weight:700;color:#0f766e;">🆔 Which rule? (rule ID)</div>
+            <div style="font-size:16px;font-weight:700;color:#1d2433;margin-top:6px;">{{ $json.body.rule.id }}</div>
+            <div style="font-size:13px;color:#64748b;margin-top:2px;">Fired {{ $json.body.rule.firedtimes || 1 }} time(s)</div>
+          </td></tr></table>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Attack type / Attack status -->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;">
+      <tr>
+        <td width="50%" valign="top" style="padding-right:6px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#f5f3ff;border:1px solid #ddd6fe;border-radius:10px;padding:14px 16px;">
+            <div style="font-size:12px;font-weight:700;color:#6d28d9;">🎯 Attack type</div>
+            <div style="font-size:16px;font-weight:700;color:#1d2433;margin-top:6px;">{{ ((($json.body.rule.mitre || {}).tactic) || []).join(', ') || 'Security Event' }}</div>
+          </td></tr></table>
+        </td>
+        <td width="50%" valign="top" style="padding-left:6px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px 16px;">
+            <div style="font-size:12px;font-weight:700;color:#1d4ed8;">🔍 Attack status</div>
+            <div style="font-size:16px;font-weight:700;color:#1d2433;margin-top:6px;">Under investigation</div>
+            <div style="font-size:12px;color:#64748b;margin-top:2px;">This event is being analyzed. Monitor for further activity.</div>
+          </td></tr></table>
+        </td>
+      </tr>
+    </table>
+
+    <!-- What should you do -->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;">
+      <tr><td style="background-color:#ecfdf5;border:1px solid #a7f3d0;border-radius:10px;padding:16px 18px;">
+        <div style="font-size:14px;font-weight:700;color:#0f766e;margin-bottom:8px;">💡 What should you do?</div>
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="font-size:14px;color:#1d2433;line-height:1.5;">
+          <tr><td valign="top" style="padding:3px 10px 3px 0;color:#0f766e;font-weight:700;">✓</td><td style="padding:3px 0;">Review the alert details above</td></tr>
+          <tr><td valign="top" style="padding:3px 10px 3px 0;color:#0f766e;font-weight:700;">✓</td><td style="padding:3px 0;">Check if this activity was authorized</td></tr>
+          <tr><td valign="top" style="padding:3px 10px 3px 0;color:#0f766e;font-weight:700;">✓</td><td style="padding:3px 0;">Contact your IT security team if suspicious</td></tr>
+          <tr><td valign="top" style="padding:3px 10px 3px 0;color:#0f766e;font-weight:700;">✓</td><td style="padding:3px 0;">Monitor the affected system: <b>{{ ($json.body.agent || {}).name || 'Unknown' }}</b></td></tr>
+        </table>
+      </td></tr>
+    </table>
+
+    <!-- Technical details -->
+    <div style="font-size:14px;font-weight:700;color:#1d2433;margin-bottom:8px;">🔧 Technical details</div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="font-size:13px;border:1px solid #e2e8f0;border-radius:10px;margin-bottom:14px;">
+      <tr><td width="140" style="padding:9px 14px;color:#64748b;border-bottom:1px solid #eef2f6;">Agent ID</td><td style="padding:9px 14px;font-weight:600;border-bottom:1px solid #eef2f6;">{{ ($json.body.agent || {}).id || 'N/A' }}</td></tr>
+      <tr><td style="padding:9px 14px;color:#64748b;border-bottom:1px solid #eef2f6;">Location</td><td style="padding:9px 14px;font-weight:600;border-bottom:1px solid #eef2f6;">{{ $json.body.location || 'N/A' }}</td></tr>
+      <tr><td style="padding:9px 14px;color:#64748b;border-bottom:1px solid #eef2f6;">Full timestamp</td><td style="padding:9px 14px;font-weight:600;border-bottom:1px solid #eef2f6;">{{ $json.body.timestamp }}</td></tr>
+      <tr><td style="padding:9px 14px;color:#64748b;border-bottom:1px solid #eef2f6;">Source IP</td><td style="padding:9px 14px;font-weight:600;border-bottom:1px solid #eef2f6;">{{ ($json.body.data || {}).srcip || 'N/A' }}</td></tr>
+      <tr><td style="padding:9px 14px;color:#64748b;">Rule groups</td><td style="padding:9px 14px;font-weight:600;">{{ ($json.body.rule.groups || []).join(', ') || 'N/A' }}</td></tr>
+    </table>
+    <div style="font-size:12px;font-weight:700;color:#64748b;margin-bottom:6px;">Raw log</div>
+    <div style="background-color:#f8fafc;border:1px solid #e2e8f0;border-left:3px solid #0f766e;border-radius:6px;padding:12px 14px;font-family:Consolas,'Courier New',monospace;font-size:12px;line-height:1.55;color:#334155;white-space:pre-wrap;word-break:break-all;margin-bottom:24px;">{{ String($json.body.full_log || 'No raw log for this alert').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }}</div>
+
+    <!-- Button -->
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:26px;"><tr>
+      <td bgcolor="#0f766e" style="background-color:#0f766e;border-radius:8px;">
+        <a href="https://YOUR-WAZUH-DASHBOARD" style="display:inline-block;padding:11px 22px;font-size:14px;font-weight:600;color:#ffffff;text-decoration:none;">Open Wazuh dashboard</a>
+      </td>
+    </tr></table>
+
+  </td></tr>
+
+  <!-- Footer -->
+  <tr>
+    <td align="center" style="padding:14px 26px;background-color:#f8fafc;border-top:1px solid #e2e8f0;font-size:12px;color:#94a3b8;">
+      Sent automatically by Wazuh and n8n for alerts of level 10 and above.
+    </td>
+  </tr>
+
+</table>
+</td></tr>
+</table>
+</div>

@@ -1,0 +1,32 @@
+<!--
+  n8n threat-intel verdicts sent back into Wazuh through the API (POST /events).
+  File: /var/ossec/etc/rules/n8n_ioc_rules.xml
+  Levels are kept below 10 on purpose, so these alerts don't also trigger the
+  "level 10+" email workflow and you don't get the same attack emailed twice.
+-->
+<group name="n8n,threat_intel,ioc_verdict,">
+
+  <!-- Base rule: any verdict event from n8n -->
+  <rule id="100950" level="3">
+    <decoded_as>json</decoded_as>
+    <field name="n8n_ioc.source">^n8n$</field>
+    <description>n8n threat intel verdict for $(n8n_ioc.ip): $(n8n_ioc.verdict)</description>
+  </rule>
+
+  <!-- Malicious: flagged by at least one threat intel source -->
+  <rule id="100951" level="9">
+    <if_sid>100950</if_sid>
+    <field name="n8n_ioc.verdict">^MALICIOUS$</field>
+    <description>Threat intel: MALICIOUS IP $(n8n_ioc.ip) reached $(n8n_ioc.agent) (flagged by $(n8n_ioc.flagged_by))</description>
+    <group>ioc_malicious,</group>
+  </rule>
+
+  <!-- Suspicious: some concern, not confirmed -->
+  <rule id="100952" level="6">
+    <if_sid>100950</if_sid>
+    <field name="n8n_ioc.verdict">^SUSPICIOUS$</field>
+    <description>Threat intel: SUSPICIOUS IP $(n8n_ioc.ip) reached $(n8n_ioc.agent) (flagged by $(n8n_ioc.flagged_by))</description>
+    <group>ioc_suspicious,</group>
+  </rule>
+
+</group>
