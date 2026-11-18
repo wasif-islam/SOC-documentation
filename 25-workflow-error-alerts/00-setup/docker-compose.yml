@@ -1,0 +1,30 @@
+# n8n for the Wazuh SOC automation workflows
+# Folder: ~/n8n    Start: docker compose up -d    Logs: docker logs -f n8n
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    container_name: n8n
+    restart: unless-stopped
+
+    # Share the server's network instead of Docker's own network.
+    # - The Wazuh indexer (9200) and Wazuh API (55000) are reached on 127.0.0.1
+    # - Wazuh's integration script posts alerts to http://localhost:5678
+    # With host networking a "ports:" section is ignored; n8n listens on 5678 directly.
+    network_mode: host
+
+    environment:
+      - GENERIC_TIMEZONE=Asia/Dhaka           # timezone for Schedule triggers
+      - TZ=Asia/Dhaka
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - N8N_SECURE_COOKIE=false               # LAB ONLY: allows logging in over plain HTTP
+      - N8N_WEBHOOK_URL=http://<WAZUH_SERVER_IP>:5678/       # base URL shown for webhooks
+      - WEBHOOK_URL=http://<WAZUH_SERVER_IP>:5678/           # same, for older n8n versions
+      - N8N_EDITOR_BASE_URL=http://<WAZUH_SERVER_IP>:5678/   # used for links in error emails (07)
+      - N8N_CONCURRENCY_PRODUCTION_LIMIT=1    # run live executions one at a time (needed by 06)
+
+    volumes:
+      - n8n_data:/home/node/.n8n              # workflows, credentials and the encryption key live here
+
+volumes:
+  n8n_data:
