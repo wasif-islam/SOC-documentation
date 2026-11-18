@@ -1,0 +1,22 @@
+<!--
+  Lab 18: rules for the OpenCTI enriched event.
+  File: /var/ossec/etc/rules/opencti_rules.xml on wazuh-server.
+  Rule IDs 100600-100601 (not used by any earlier lab).
+-->
+<group name="opencti,threat_intel,">
+
+  <rule id="100600" level="3">
+    <decoded_as>json</decoded_as>
+    <field name="integration">opencti</field>
+    <description>OpenCTI integration event</description>
+    <options>no_full_log</options>
+  </rule>
+
+  <rule id="100601" level="12">
+    <if_sid>100600</if_sid>
+    <field name="opencti.found">1</field>
+    <description>OpenCTI: IOC $(opencti.value) matched known indicator (author: $(opencti.author))</description>
+    <options>no_full_log</options>
+  </rule>
+
+</group>
